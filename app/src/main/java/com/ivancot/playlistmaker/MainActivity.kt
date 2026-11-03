@@ -10,18 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -38,9 +27,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import com.ivancot.playlistmaker.ui.PlaylistBlack
 import com.ivancot.playlistmaker.ui.PlaylistBlue
 import com.ivancot.playlistmaker.ui.PlaylistMakerTheme
@@ -50,20 +39,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT),
         )
+        fun showButtonToast(@StringRes label: Int) {
+            Toast.makeText(this, getString(R.string.button_pressed, getString(label)), Toast.LENGTH_SHORT).show()
+        }
         setContent {
             PlaylistMakerTheme {
                 MainScreen(
                     onSearchClick = { startActivity(Intent(this, SearchActivity::class.java)) },
                     onSettingsClick = { startActivity(Intent(this, SettingsActivity::class.java)) },
-                    onLibraryClick = {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.button_pressed, getString(R.string.media_library)),
-                            Toast.LENGTH_SHORT,
-                        ).show()
-                    },
+                    onPlaylistsClick = { showButtonToast(R.string.playlists) },
+                    onFavoritesClick = { showButtonToast(R.string.favorites) },
                 )
             }
         }
@@ -74,56 +61,46 @@ class MainActivity : ComponentActivity() {
 private fun MainScreen(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onLibraryClick: () -> Unit,
+    onPlaylistsClick: () -> Unit,
+    onFavoritesClick: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize().background(PlaylistBlue)
-            .safeDrawingPadding().padding(horizontal = 16.dp),
-    ) {
+    Column(Modifier.fillMaxSize().background(PlaylistBlue).statusBarsPadding()) {
         Text(
             text = stringResource(R.string.app_name),
             color = Color.White,
             fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 14.dp, bottom = 30.dp),
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 14.dp),
         )
-        BoxWithConstraints(Modifier.weight(1f).padding(bottom = 28.dp)) {
-            // Equal cards on regular screens; scrolling keeps large text and landscape usable.
-            val cardHeight = ((maxHeight - 32.dp) / 3).coerceAtLeast(96.dp)
-            Column(
-                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                MenuButton(R.string.search, R.drawable.ic_search, cardHeight, onSearchClick)
-                MenuButton(R.string.media_library, R.drawable.ic_library, cardHeight, onLibraryClick)
-                MenuButton(R.string.settings, R.drawable.ic_settings, cardHeight, onSettingsClick)
-            }
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .background(Color.White, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+                .navigationBarsPadding().verticalScroll(rememberScrollState()),
+        ) {
+            MenuButton(R.string.search, R.drawable.ic_search, onSearchClick)
+            MenuButton(R.string.playlists, R.drawable.ic_library, onPlaylistsClick)
+            MenuButton(R.string.favorites, R.drawable.ic_favorite, onFavoritesClick)
+            MenuButton(R.string.settings, R.drawable.ic_settings, onSettingsClick)
         }
     }
 }
 
 @Composable
-private fun MenuButton(
-    @StringRes label: Int,
-    @DrawableRes icon: Int,
-    height: androidx.compose.ui.unit.Dp,
-    onClick: () -> Unit,
-) {
+private fun MenuButton(@StringRes label: Int, @DrawableRes icon: Int, onClick: () -> Unit) {
     Surface(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth().heightIn(min = height).semantics { role = Role.Button },
-        shape = RoundedCornerShape(16.dp),
-        color = Color.White,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp).semantics { role = Role.Button },
+        color = Color.Transparent,
         contentColor = PlaylistBlack,
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
-            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(painterResource(icon), contentDescription = null, modifier = Modifier.size(24.dp))
             Spacer(Modifier.width(8.dp))
-            Text(stringResource(label), fontSize = 22.sp, fontWeight = FontWeight.Medium)
+            Text(stringResource(label), fontSize = 22.sp, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
+            Icon(painterResource(R.drawable.ic_chevron_right), contentDescription = null, tint = Color(0xFFAEAFB4), modifier = Modifier.size(24.dp))
         }
     }
 }
@@ -131,5 +108,5 @@ private fun MenuButton(
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun MainScreenPreview() {
-    PlaylistMakerTheme { MainScreen({}, {}, {}) }
+    PlaylistMakerTheme { MainScreen({}, {}, {}, {}) }
 }

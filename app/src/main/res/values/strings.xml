@@ -2,7 +2,8 @@
 <resources>
     <string name="app_name">Playlist Maker</string>
     <string name="search">Поиск</string>
-    <string name="media_library">Медиатека</string>
+    <string name="playlists">Плейлисты</string>
+    <string name="favorites">Избранное</string>
     <string name="settings">Настройки</string>
     <string name="back">Назад</string>
     <string name="button_pressed">Нажата кнопка \"%1$s\"</string>
