@@ -1,6 +1,7 @@
 package com.ivancot.playlistmaker.navigation
 
 import android.graphics.Color
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
@@ -9,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,11 +20,16 @@ import com.ivancot.playlistmaker.MainScreen
 import com.ivancot.playlistmaker.R
 import com.ivancot.playlistmaker.ui.SearchScreen
 import com.ivancot.playlistmaker.ui.SettingsScreen
+import com.google.gson.Gson
+import com.ivancot.playlistmaker.domain.model.Track
+import com.ivancot.playlistmaker.ui.search.SearchViewModel
+import com.ivancot.playlistmaker.ui.search.DetailsScreen
 
-enum class PlaylistScreen { Main, Search, Settings }
+enum class PlaylistScreen { Main, Search, Settings, Details }
 
 @Composable
-fun PlaylistHost(navController: NavHostController) {
+fun PlaylistHost(navController: NavHostController, searchViewModel: SearchViewModel) {
+    val gson = remember { Gson() }
     val context = LocalContext.current
     val activity = LocalActivity.current as? ComponentActivity
     val entry by navController.currentBackStackEntryAsState()
@@ -50,7 +57,16 @@ fun PlaylistHost(navController: NavHostController) {
                 onFavoritesClick = { showToast(R.string.favorites) },
             )
         }
-        composable(PlaylistScreen.Search.name) { SearchScreen(onBack = ::back) }
+        composable(PlaylistScreen.Search.name) {
+            SearchScreen(searchViewModel, navigateToDetailScreen = { track ->
+                navController.navigate("${PlaylistScreen.Details.name}/${Uri.encode(gson.toJson(track))}") { launchSingleTop = true }
+            }, onBack = ::back)
+        }
+        composable("${PlaylistScreen.Details.name}/{trackJson}") { backStackEntry ->
+            val json = backStackEntry.arguments?.getString("trackJson")
+            val track = remember(json) { runCatching { gson.fromJson(json, Track::class.java) }.getOrNull() }
+            DetailsScreen(track, onBack = ::back)
+        }
         composable(PlaylistScreen.Settings.name) { SettingsScreen(onBack = ::back) }
     }
 }

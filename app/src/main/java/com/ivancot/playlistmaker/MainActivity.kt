@@ -33,8 +33,11 @@ import com.ivancot.playlistmaker.ui.PlaylistBlue
 import com.ivancot.playlistmaker.ui.PlaylistMakerTheme
 import androidx.navigation.compose.rememberNavController
 import com.ivancot.playlistmaker.navigation.PlaylistHost
+import com.ivancot.playlistmaker.ui.search.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
+    private val searchViewModel: SearchViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
@@ -43,7 +46,7 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             PlaylistMakerTheme {
-                PlaylistHost(rememberNavController())
+                PlaylistHost(rememberNavController(), searchViewModel)
             }
         }
     }

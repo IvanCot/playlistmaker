@@ -7,6 +7,13 @@
     <string name="settings">Настройки</string>
     <string name="back">Назад</string>
     <string name="search_query">Поисковый запрос</string>
+    <string name="perform_search">Найти треки</string>
+    <string name="no_tracks_found">Ничего не найдено</string>
+    <string name="search_failed">Ошибка при поиске</string>
+    <string name="search_retry_hint">Попробуйте выполнить поиск ещё раз</string>
+    <string name="track_details">О треке</string>
+    <string name="track_duration">Длительность: %1$s</string>
+    <string name="track_unavailable">Не удалось открыть трек</string>
     <string name="clear_query">Очистить поисковый запрос</string>
     <string name="dark_theme">Тёмная тема</string>
     <string name="share_app">Поделиться приложением</string>
