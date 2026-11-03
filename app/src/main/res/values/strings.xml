@@ -7,6 +7,7 @@
     <string name="settings">Настройки</string>
     <string name="back">Назад</string>
     <string name="search_query">Поисковый запрос</string>
+    <string name="enter_search_query">Введите строку для поиска</string>
     <string name="perform_search">Найти треки</string>
     <string name="no_tracks_found">Ничего не найдено</string>
     <string name="search_failed">Ошибка при поиске</string>
