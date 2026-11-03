@@ -16,6 +16,25 @@ class NavigationTest {
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @Test
+    fun querySurvivesRecreationAndCanBeCleared() {
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            openScreen("Поиск")
+            val query = device.wait(Until.findObject(By.desc("Поисковый запрос")), TIMEOUT)
+            assertNotNull(query)
+            query.text = "Кино"
+            assertTrue(device.wait(Until.hasObject(By.text("Кино")), TIMEOUT))
+            scenario.recreate()
+            assertTrue(device.wait(Until.hasObject(By.text("Кино")), TIMEOUT))
+            val clear = device.wait(Until.findObject(By.desc("Очистить поисковый запрос")), TIMEOUT)
+            assertNotNull(clear)
+            clear.click()
+            assertTrue(device.wait(Until.gone(By.text("Кино")), TIMEOUT))
+            assertTrue(device.wait(Until.gone(By.desc("Очистить поисковый запрос")), TIMEOUT))
+            assertTrue(device.hasObject(By.text("Поиск")))
+        }
+    }
+
+    @Test
     fun searchOpensAndSystemBackReturnsHome() {
         ActivityScenario.launch(MainActivity::class.java).use {
             openScreen("Поиск")

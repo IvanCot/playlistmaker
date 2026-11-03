@@ -6,5 +6,19 @@
     <string name="favorites">Избранное</string>
     <string name="settings">Настройки</string>
     <string name="back">Назад</string>
+    <string name="search_query">Поисковый запрос</string>
+    <string name="clear_query">Очистить поисковый запрос</string>
+    <string name="dark_theme">Тёмная тема</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="contact_developers">Написать разработчикам</string>
+    <string name="user_agreement">Пользовательское соглашение</string>
+    <string name="share_message">Попробуйте Playlist Maker! https://github.com/IvanCot/playlistmaker</string>
+    <string name="developer_email" translatable="false">20072005i@gmail.com</string>
+    <string name="email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="email_body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="offer_url" translatable="false">https://yandex.ru/legal/practicum_offer/ru/</string>
+    <string name="no_share_app">Не найдено приложение для отправки сообщения</string>
+    <string name="no_email_app">Установите почтовое приложение, чтобы написать разработчикам</string>
+    <string name="no_browser_app">Не найден браузер для открытия соглашения</string>
     <string name="button_pressed">Нажата кнопка \"%1$s\"</string>
 </resources>

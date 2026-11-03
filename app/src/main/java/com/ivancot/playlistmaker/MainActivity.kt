@@ -1,8 +1,6 @@
 package com.ivancot.playlistmaker
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -33,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import com.ivancot.playlistmaker.ui.PlaylistBlack
 import com.ivancot.playlistmaker.ui.PlaylistBlue
 import com.ivancot.playlistmaker.ui.PlaylistMakerTheme
+import androidx.navigation.compose.rememberNavController
+import com.ivancot.playlistmaker.navigation.PlaylistHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,24 +41,16 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT),
         )
-        fun showButtonToast(@StringRes label: Int) {
-            Toast.makeText(this, getString(R.string.button_pressed, getString(label)), Toast.LENGTH_SHORT).show()
-        }
         setContent {
             PlaylistMakerTheme {
-                MainScreen(
-                    onSearchClick = { startActivity(Intent(this, SearchActivity::class.java)) },
-                    onSettingsClick = { startActivity(Intent(this, SettingsActivity::class.java)) },
-                    onPlaylistsClick = { showButtonToast(R.string.playlists) },
-                    onFavoritesClick = { showButtonToast(R.string.favorites) },
-                )
+                PlaylistHost(rememberNavController())
             }
         }
     }
 }
 
 @Composable
-private fun MainScreen(
+fun MainScreen(
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onPlaylistsClick: () -> Unit,
